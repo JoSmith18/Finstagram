@@ -1,0 +1,13 @@
+/* .crop {
+    height: 300px;
+    /* width: 400px; */
+/* overflow: inherit; */
+/* } */
+.crop img {
+    height: auto;
+    width: 400px;
+}
+
+panel {
+    margin-left: 10px;
+}

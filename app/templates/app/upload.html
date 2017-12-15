@@ -1,0 +1,15 @@
+{% block body %}
+
+<center>
+    <h2>
+        <a href="{% url 'app:feed' %}">Feed Page</a>
+    </h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %} {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+    {% if answer != None %}
+    <h3>Answer: {{ answer }}</h3>
+    {% endif %}
+</center>
+{% endblock %}

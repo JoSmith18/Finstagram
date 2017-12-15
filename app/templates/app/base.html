@@ -1,0 +1,47 @@
+<html>
+{% load static %}
+
+<head>
+    <title>FakeInsta</title>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+        crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Bree+Serif" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'app/bootwatch.css' %}">
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+</head>
+
+<body>
+    <div class="row">
+        <center>
+            <div class="jumbotron">
+                <h1>Feed</h1>
+                <h2>
+                    <a href="{% url 'app:upload' %}">Upload Page</a>
+                </h2>
+            </div>
+            {% if docs %} {% for d in docs %}
+            <div class="col-lg-6 col-lg-offset-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">FakeInsta</div>
+                    <div class="panel-body">
+                        <div class="thumbnail crop">
+                            <img src="{% static d.image_url %}?t={% now 'u' %}" id="{{d.id}}" class="img-responsive" />
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <a href="{% url 'app:filter' d.id %}">Filter Image</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %} {% else %}
+            <div class="col-lg-12">
+                <h3>No Pictures :'(</h3>
+            </div>
+            {% endif %}
+        </center>
+    </div>
+</body>
+
+</html>
