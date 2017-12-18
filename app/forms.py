@@ -6,29 +6,27 @@ from PIL import ImageFilter
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ('image', )
+        fields = ('image', 'caption')
 
 
 class FilterForm(forms.Form):
-    options = (('', ''), ('BLUR', 'BLUR'), ('CONTOUR', 'CONTOUR'),
-               ('DETAIL', 'DETAIL'), ('EDGE_ENHANCE', 'EDGE_ENHANCE'),
+    options = (('', ''), ('Black&White', 'Black&White'), ('BLUR', 'BLUR'),
+               ('CONTOUR', 'CONTOUR'), ('DETAIL', 'DETAIL'),
                ('EDGE_ENHANCE_MORE',
                 'EDGE_ENHANCE_MORE'), ('EMBOSS', 'EMBOSS'), ('FIND_EDGES',
                                                              'FIND_EDGES'),
-               ('SMOOTH', 'SMOOTH'), ('SMOOTH_MORE',
-                                      'SMOOTH_MORE'), ('SHARPEN', 'SHARPEN'))
+               ('SMOOTH_MORE', 'SMOOTH_MORE'), ('SHARPEN', 'SHARPEN'))
     filters = forms.ChoiceField(choices=options)
 
-    def get_filt(self):
+    def get_filter(self):
         return {
             'BLUR': ImageFilter.GaussianBlur(50),
             'CONTOUR': ImageFilter.CONTOUR,
             'EMBOSS': ImageFilter.EMBOSS,
             'DETAIL': ImageFilter.DETAIL,
-            'EDGE_ENHANCE': ImageFilter.EDGE_ENHANCE,
             'EDGE_ENHANCE_MORE': ImageFilter.EDGE_ENHANCE_MORE,
             'FIND_EDGES': ImageFilter.FIND_EDGES,
-            'SMOOTH': ImageFilter.SMOOTH,
             'SMOOTH_MORE': ImageFilter.SMOOTH_MORE,
             'SHARPEN': ImageFilter.SHARPEN,
+            'Black&White': 'Black'
         }.get(self.cleaned_data['filters'], None)

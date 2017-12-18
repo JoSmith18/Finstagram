@@ -13,34 +13,54 @@
 </head>
 
 <body>
-    <div class="row">
-        <center>
-            <div class="jumbotron">
-                <h1>Feed</h1>
-                <h2>
-                    <a href="{% url 'app:upload' %}">Upload Page</a>
-                </h2>
-            </div>
+    <div class="container">
+
+        <div class="jumbotron">
+            <h1>Feed</h1>
+            <h2>
+                <a href="{% url 'app:upload' %}">Upload Page</a>
+            </h2>
+        </div>
+        <div class="row">
             {% if docs %} {% for d in docs %}
-            <div class="col-lg-6 col-lg-offset-3">
-                <div class="panel panel-default">
-                    <div class="panel-heading">FakeInsta</div>
-                    <div class="panel-body">
-                        <div class="thumbnail crop">
-                            <img src="{% static d.image_url %}?t={% now 'u' %}" id="{{d.id}}" class="img-responsive" />
-                        </div>
-                    </div>
-                    <div class="panel-footer">
-                        <a href="{% url 'app:filter' d.id %}">Filter Image</a>
+            <!-- <div class="col-lg-6 col-lg-offset-3"> -->
+            <!-- <div class="col-lg-4"> -->
+            {% autoescape off %} {{ html }} {% endautoescape %}
+            <div class="panel panel-default">
+                <div class="panel-heading"> {{ d.uploaded_at }}
+                    <form action="{% url 'app:delete' d.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn pull-right">
+                            <i class="fa fa-window-close" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="panel-body">
+                    <div class="thumbnail crop">
+                        <img src="{% static d.image_url %}?t={% now 'u' %}" id="{{d.id}}" class="img-responsive" />
                     </div>
                 </div>
+                <div class="panel-footer">
+                    <h4>{{d.caption}}</h4>
+                    <a href="{% url 'app:filter' d.id %}">
+                        <i class="fa fa-paint-brush" aria-hidden="true"></i> Filter
+                    </a>
+                    <form action="{% url 'app:rotate' d.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn">
+                            <i class="fa fa-repeat" aria-hidden="true"></i> Rotate</button>
+                    </form>
+                </div>
             </div>
-            {% endfor %} {% else %}
-            <div class="col-lg-12">
-                <h3>No Pictures :'(</h3>
-            </div>
-            {% endif %}
-        </center>
+        </div>
+        {% endfor %} {% else %}
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h3>No Pictures :'(</h3>
+        </div>
+        {% endif %}
+    </div>
     </div>
 </body>
 

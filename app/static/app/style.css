@@ -3,11 +3,20 @@
     /* width: 400px; */
 /* overflow: inherit; */
 /* } */
-.crop img {
+img .crop {
     height: auto;
-    width: 400px;
+    min-width: 100%;
 }
 
 panel {
     margin-left: 10px;
+}
+
+.jumbotron {
+    text-align: center;
+}
+
+.pull-right {
+    float: right;
+    margin-top: -5px;
 }
