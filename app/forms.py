@@ -1,12 +1,29 @@
 from django import forms
-from app.models import Document
+from app.models import Document, Video, Comment
 from PIL import ImageFilter
 
 
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ('image', 'caption')
+        fields = ('image', 'caption', 'posted_by')
+
+
+class VideoForm(forms.ModelForm):
+    class Meta:
+        model = Video
+        fields = ('video', 'caption', 'posted_by')
+
+
+class CommentForm(forms.Form):
+    comment = forms.CharField()
+
+    def __init__(self, document=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.document = document
+
+    def save(self):
+        self.document.comment_set.create(comment=self.cleaned_data['comment'])
 
 
 class FilterForm(forms.Form):
@@ -20,7 +37,7 @@ class FilterForm(forms.Form):
 
     def get_filter(self):
         return {
-            'BLUR': ImageFilter.GaussianBlur(50),
+            'BLUR': ImageFilter.GaussianBlur(2),
             'CONTOUR': ImageFilter.CONTOUR,
             'EMBOSS': ImageFilter.EMBOSS,
             'DETAIL': ImageFilter.DETAIL,
