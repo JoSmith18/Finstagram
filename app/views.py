@@ -8,6 +8,7 @@ from os.path import isfile, join
 from PIL import ImageFilter, Image
 from django.views import View
 from app import models
+from resizeimage import resizeimage
 
 
 class Feed(View):
@@ -39,6 +40,8 @@ class Upload(View):
             s = min(w, h)
             image = image.crop(box=(int((w - s) / 2), int((h - s) / 2), int(
                 (w + s) / 2), int((h + s) / 2)))
+            image = resizeimage.resize_cover(image, [500, 500], validate=False)
+
             image.save(path)
             return redirect('../feed/')
         else:
@@ -85,8 +88,25 @@ class Filter(View):
         image = Image.open(path)
         if form.is_valid():
             filt = form.get_filter()
-            if isinstance(filt, str):
+            if filt == 'Black':
                 image.convert('L').convert('RGB').save(path)
+            elif filt == 'Jofilt':
+                image2 = Image.open(
+                    '/home/basecamp/Documents/DailyExercises/Dec/Finstagram/app/static/app/images/jofilter.jpg'
+                )
+                Image.blend(image, image2, 0.33).save(path)
+            elif filt == 'AKA':
+                image = image.convert('L').quantize(3).convert('RGB').filter(
+                    ImageFilter.SMOOTH_MORE).filter(
+                        ImageFilter.SMOOTH_MORE).filter(
+                            ImageFilter.SMOOTH_MORE).quantize(3).convert('RGB')
+                data = image.getdata()
+                color_a, color_b, _ = tuple(set(data))
+                d = {str(color_a): (239, 186, 209), str(color_b): (16, 165, 0)}
+                image = Image.new('RGB', image.size)
+                image.putdata([d.get(str(t), (255, 255, 255)) for t in data])
+                image.save(path)
+
             else:
                 image.filter(filt).save(path)
             return redirect('app:feed')

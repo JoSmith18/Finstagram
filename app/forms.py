@@ -23,16 +23,25 @@ class CommentForm(forms.Form):
         self.document = document
 
     def save(self):
-        self.document.comment_set.create(comment=self.cleaned_data['comment'])
+        return self.document.comment_set.create(
+            comment=self.cleaned_data['comment'])
 
 
 class FilterForm(forms.Form):
-    options = (('', ''), ('Black&White', 'Black&White'), ('BLUR', 'BLUR'),
-               ('CONTOUR', 'CONTOUR'), ('DETAIL', 'DETAIL'),
-               ('EDGE_ENHANCE_MORE',
-                'EDGE_ENHANCE_MORE'), ('EMBOSS', 'EMBOSS'), ('FIND_EDGES',
-                                                             'FIND_EDGES'),
-               ('SMOOTH_MORE', 'SMOOTH_MORE'), ('SHARPEN', 'SHARPEN'))
+    options = [
+        ('', ''),
+        ('AKA', 'AKA'),
+        ('Jo\'s Custom Filter', 'Jo\'s Custom Filter', ),
+        ('Black&White', 'Black&White'),
+        ('BLUR', 'BLUR'),
+        ('CONTOUR', 'CONTOUR'),
+        ('DETAIL', 'DETAIL'),
+        ('EDGE_ENHANCE_MORE', 'EDGE_ENHANCE_MORE'),
+        ('EMBOSS', 'EMBOSS'),
+        ('FIND_EDGES', 'FIND_EDGES'),
+        ('SMOOTH_MORE', 'SMOOTH_MORE'),
+        ('SHARPEN', 'SHARPEN'),
+    ]
     filters = forms.ChoiceField(choices=options)
 
     def get_filter(self):
@@ -45,5 +54,7 @@ class FilterForm(forms.Form):
             'FIND_EDGES': ImageFilter.FIND_EDGES,
             'SMOOTH_MORE': ImageFilter.SMOOTH_MORE,
             'SHARPEN': ImageFilter.SHARPEN,
-            'Black&White': 'Black'
+            'Black&White': 'Black',
+            'Jo\'s Custom Filter': 'Jofilt',
+            'AKA': 'AKA'
         }.get(self.cleaned_data['filters'], None)

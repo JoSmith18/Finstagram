@@ -1,4 +1,9 @@
 {% block body %} {% load static %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'app/bootwatch.css' %}">
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+</head>
 <center>
     <h2>
         <a href="{% url 'app:feed' %}">Feed Page</a>

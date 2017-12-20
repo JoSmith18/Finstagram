@@ -25,3 +25,11 @@ body {
 .like-dislike-btn form {
     display: inline;
 }
+
+.panelfoot {
+    display: none;
+}
+
+.panel-footer {
+    cursor: pointer;
+}
