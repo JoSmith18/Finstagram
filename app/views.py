@@ -18,9 +18,9 @@ class Feed(View):
         videos = models.Video.objects.all()
         comment_form = forms.CommentForm()
         html = '<div class="col-lg-4">'
-        if len(docs) == 1:
+        if len(docs) + len(videos) == 1:
             html = '<div class="col-lg-6 col-lg-offset-3">'
-        elif len(docs) == 2:
+        elif len(docs) + len(videos) == 2:
             html = '<div class="col-lg-6">'
         return render(request, 'app/base.html', {
             'docs': docs,

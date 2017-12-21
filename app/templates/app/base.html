@@ -94,7 +94,7 @@
                     </div>
                 </div>
             </div>
-            {% endfor %} {% endif %}{% if docs %} {% for d in docs %} {% autoescape off %} {{ html }} {% endautoescape %}
+            {% endfor %} {% endif %}{% if docs or videos%} {% for d in docs %} {% autoescape off %} {{ html }} {% endautoescape %}
             <div class="panel panel-default">
                 <div class="panel-heading"> {{ d.uploaded_at }}
                     <h3>
