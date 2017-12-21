@@ -77,15 +77,15 @@ class Upload_Video(View):
 
 
 class Filter(View):
-    def get(self, request, img_id):
+    def get(self, request, doc_id):
         form = forms.FilterForm()
-        path = models.Document.objects.get(id=img_id).image_url()
+        path = models.Document.objects.get(id=doc_id).image_url()
         return render(request, 'app/filter.html', {'form': form, 'path': path})
 
-    def post(self, request, img_id):
+    def post(self, request, doc_id):
         form = forms.FilterForm(request.POST)
         path = 'app/static/' + models.Document.objects.get(
-            id=img_id).image_url()
+            id=doc_id).image_url()
         image = Image.open(path)
         if form.is_valid():
             filt = form.get_filter()
@@ -155,30 +155,30 @@ class Filter(View):
 
 
 class Rotate(View):
-    def post(self, request, img_id):
+    def post(self, request, doc_id):
         form = forms.FilterForm(request.POST)
         path = 'app/static/' + models.Document.objects.get(
-            id=img_id).image_url()
+            id=doc_id).image_url()
         image = Image.open(path)
         image.rotate(-90).save(path)
         return redirect('app:feed')
 
 
 class Delete_Picture(View):
-    def post(self, request, img_id):
+    def post(self, request, doc_id):
         form = forms.FilterForm(request.POST)
         path = 'app/static/' + models.Document.objects.get(
-            id=img_id).image_url()
-        models.Document.objects.get(id=img_id).delete()
+            id=doc_id).image_url()
+        models.Document.objects.get(id=doc_id).delete()
         remove(path)
         return redirect('app:feed')
 
 
 class Delete_Video(View):
-    def post(self, request, img_id):
+    def post(self, request, doc_id):
         form = forms.FilterForm(request.POST)
-        path = 'app/static/' + models.Video.objects.get(id=img_id).image_url()
-        models.Video.objects.get(id=img_id).delete()
+        path = 'app/static/' + models.Video.objects.get(id=doc_id).image_url()
+        models.Video.objects.get(id=doc_id).delete()
         remove(path)
         return redirect('app:feed')
 
@@ -196,8 +196,8 @@ class Add_Comment(View):
 
 class Add_Comment_Video(View):
     def post(self, request, document_id):
-        document = models.Video.objects.get(id=document_id)
-        form = forms.CommentForm(document, request.POST)
+        video = models.Video.objects.get(id=document_id)
+        form = forms.CommentOnVideoForm(video, request.POST)
         if form.is_valid():
             form.save()
             return redirect('app:feed')
@@ -206,8 +206,8 @@ class Add_Comment_Video(View):
 
 
 class Like_Pic(View):
-    def post(self, request, img_id):
-        d = models.Document.objects.get(id=img_id)
+    def post(self, request, doc_id):
+        d = models.Document.objects.get(id=doc_id)
         d.likes += 1
         d.save()
         return redirect('app:feed')
@@ -222,8 +222,8 @@ class Like_Vid(View):
 
 
 class DisLike_Pic(View):
-    def post(self, request, img_id):
-        d = models.Document.objects.get(id=img_id)
+    def post(self, request, doc_id):
+        d = models.Document.objects.get(id=doc_id)
         d.dislikes += 1
         d.save()
         return redirect('app:feed')

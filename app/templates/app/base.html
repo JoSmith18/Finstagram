@@ -48,31 +48,53 @@
                 </div>
                 <div class="panel-body">
                     <div class="thumbnail crop">
-                        <video width="320" height="320" id="{{video.id}}" controls>
+                        <video width="320" height="260" id="{{video.id}}" controls>
                             <source src="{% static video.image_url %}?t={% now 'u' %}" type="video/ogg" />
                             <source src="{% static video.image_url %}?t={% now 'u' %}" type="video/mp4" /> Your browser does not support the video tag.
                         </video>
                     </div>
+                    <div class="like-dislike-btn">
+                        <form action="{% url 'app:likevideo' video.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-square fa-stack-2x text-danger"></i>
+                                    <i class="fa fa-heart fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </button>
+                            {{video.likes}}
+                        </form>
+                        <form action="{% url 'app:dislikevideo' video.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-heart fa-stack-1x text-danger"></i>
+                                    <i class="fa fa-ban fa-stack-2x"></i>
+                                </span>
+                            </button>
+                            {{video.dislikes}}
+                        </form>
+                    </div>
                 </div>
                 <div class="panel-footer">
-                    <h4>{{video.caption}}</h4>
-                    <hr>
-                    <ol>
-                        {% for comment in d.comment_set.all %}
-                        <li>{{comment.comment}} - Commented At: {{comment.time}}</li> {% endfor %}
-                    </ol>
-                    <hr>
-                    <form action="{%url 'app:commentvideo' video.id %}" method="post">
-                        {% csrf_token %} {{ comment_form }}
-                        <button type="submit" class="btn">Add Comment</button>
-                    </form>
-                    <h3>FakeInsta By Jo</h3>
+                    <h4 class="panel-click">
+                        <i class="fa fa-chevron-down" aria-hidden="true"></i>&emsp;{{video.caption}}</h4>
+                    <div class="panelfoot">
+                        <hr>
+                        <ol>
+                            {% for comment in video.commentvid_set.all %}
+                            <li>{{comment.comment}} - Commented At: {{comment.time}}</li> {% endfor %}
+                        </ol>
+                        <hr>
+                        <form action="{%url 'app:commentvideo' video.id %}" method="post">
+                            {% csrf_token %} {{ comment_form }}
+                            <button type="submit" class="btn">Add Comment</button>
+                        </form>
+                        <h3>FakeInsta By Jo</h3>
+                    </div>
                 </div>
             </div>
-            {% endfor %} {% endif %}{% if docs %} {% for d in docs %}
-            <!-- <div class="col-lg-6 col-lg-offset-3"> -->
-            <!-- <div class="col-lg-4"> -->
-            {% autoescape off %} {{ html }} {% endautoescape %}
+            {% endfor %} {% endif %}{% if docs %} {% for d in docs %} {% autoescape off %} {{ html }} {% endautoescape %}
             <div class="panel panel-default">
                 <div class="panel-heading"> {{ d.uploaded_at }}
                     <h3>
@@ -145,7 +167,6 @@
             <h3>No Pictures :'(</h3>
         </div>
         {% endif %}
-    </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="{% static 'app/index.js' %}"></script>

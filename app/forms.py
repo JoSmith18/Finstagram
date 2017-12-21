@@ -27,6 +27,18 @@ class CommentForm(forms.Form):
             comment=self.cleaned_data['comment'])
 
 
+class CommentOnVideoForm(forms.Form):
+    comment = forms.CharField()
+
+    def __init__(self, video=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.video = video
+
+    def save(self):
+        return self.video.commentvid_set.create(
+            comment=self.cleaned_data['comment'])
+
+
 class FilterForm(forms.Form):
     options = [
         ('', ''),
