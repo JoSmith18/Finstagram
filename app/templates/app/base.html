@@ -7,20 +7,29 @@
         crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
         crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Bree+Serif" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Bungee" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'app/bootwatch.css' %}">
     <link rel="stylesheet" href="{% static 'app/style.css' %}">
 </head>
 
 <body>
     <div class="container">
-
         <div class="jumbotron">
-            <h1>Feed</h1>
+            <div class="col-lg-12 icon-header">
+                <span class="head-text">Feed</span>
+                <span class="fa-stack fa-md">
+                    <i class="fa fa-circle fa-stack-1x jotext"></i>
+                    <i class="fa fa-instagram fa-stack-2x fa-rotate-90" aria-hidden="true"></i>
+                </span>
+            </div>
             <h2>
-                <a href="{% url 'app:upload' %}">Upload Picture</a>
+                <a href="{% url 'app:upload' %}">
+                    <i class="fa fa-camera" aria-hidden="true"></i>
+                    Upload Picture
+                </a>
                 <br>
-                <a href="{% url 'app:uploadvideo' %}">Upload Video</a>
+                <a href="{% url 'app:uploadvideo' %}">
+                    <i class="fa fa-video-camera" aria-hidden="true"></i> Upload Video</a>
             </h2>
         </div>
         <div class="row">
@@ -29,13 +38,13 @@
                 <div class="panel-heading"> {{ video.uploaded_at }}
                     <h3>
                         <b>Posted By: {{ video.posted_by }}</b>
-                    </h3>
-                    <form action="{% url 'app:deletevideo' video.id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn pull-right">
-                            <i class="fa fa-window-close" aria-hidden="true"></i>
-                        </button>
-                    </form>
+
+                        <form action="{% url 'app:deletevideo' video.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn pull-right">
+                                <i class="fa fa-window-close" aria-hidden="true"></i>
+                            </button>
+                        </form>
                 </div>
                 <div class="panel-body">
                     <div class="thumbnail crop">
@@ -104,7 +113,7 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <h4>
+                    <h4 class="panel-click">
                         <i class="fa fa-chevron-down" aria-hidden="true"></i>&emsp;{{d.caption}}</h4>
                     <div class="panelfoot">
                         <a href="{% url 'app:filter' d.id %}">

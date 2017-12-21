@@ -9,11 +9,12 @@ from PIL import ImageFilter, Image
 from django.views import View
 from app import models
 from resizeimage import resizeimage
+from random import randint
 
 
 class Feed(View):
     def get(self, request):
-        docs = models.Document.objects.all()
+        docs = models.Document.objects.all().order_by('-uploaded_at')
         videos = models.Video.objects.all()
         comment_form = forms.CommentForm()
         html = '<div class="col-lg-4">'
@@ -106,7 +107,46 @@ class Filter(View):
                 image = Image.new('RGB', image.size)
                 image.putdata([d.get(str(t), (255, 255, 255)) for t in data])
                 image.save(path)
+            elif filt == 'Random':
+                image = image.convert('L').quantize(3).convert('RGB').filter(
+                    ImageFilter.SMOOTH_MORE).filter(
+                        ImageFilter.SMOOTH_MORE).filter(
+                            ImageFilter.SMOOTH_MORE).quantize(3).convert('RGB')
+                w, h = image.size
+                ca = (randint(0, 255), randint(0, 255), randint(0, 255))
+                cb = (randint(0, 255), randint(0, 255), randint(0, 255))
 
+                data = list(image.getdata())
+                color_a, color_b, _ = tuple(set(data))
+                d = [{
+                    str(color_a): ca,
+                    str(color_b): cb
+                }, {
+                    str(color_b): ca,
+                    str(color_a): cb
+                }]
+                n = len(data)
+                c = 0
+                while c < n // 2:
+                    for i in range(w // 2):
+                        key = str(data[c + i])
+                        data[c + i] = d[0].get(key, (255, 255, 255))
+                    for i in range(w // 2, w):
+                        key = str(data[c + i])
+                        data[c + i] = d[1].get(key, (255, 255, 255))
+                    c += n // h
+
+                while c < n:
+                    for i in range(w // 2):
+                        key = str(data[c + i])
+                        data[c + i] = d[1].get(key, (255, 255, 255))
+                    for i in range(w // 2, w):
+                        key = str(data[c + i])
+                        data[c + i] = d[0].get(key, (255, 255, 255))
+                    c += n // h
+                image = Image.new('RGB', image.size)
+                image.putdata(data)
+                image.save(path)
             else:
                 image.filter(filt).save(path)
             return redirect('app:feed')

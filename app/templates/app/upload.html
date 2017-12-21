@@ -4,16 +4,17 @@
     <link rel="stylesheet" href="{% static 'app/bootwatch.css' %}">
     <link rel="stylesheet" href="{% static 'app/style.css' %}">
 </head>
-<center>
-    <h2>
-        <a href="{% url 'app:feed' %}">Feed Page</a>
-    </h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %} {{ form.as_p }}
-        <button type="submit">Upload</button>
-    </form>
-    {% if answer != None %}
-    <h3>Answer: {{ answer }}</h3>
-    {% endif %}
-</center>
-{% endblock %}
+<div class="container">
+    <center>
+        <h2>
+            <a href="{% url 'app:feed' %}">Feed Page</a>
+        </h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %} {{form}}
+            <img id="blah" src="#" alt="your image" />
+            <button type="submit">Upload</button>
+        </form>
+    </center>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{% static 'app/index.js' %}"></script> {% endblock %}

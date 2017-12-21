@@ -33,3 +33,16 @@ body {
 .panel-footer {
     cursor: pointer;
 }
+
+.icon-header {
+    font-size: 3.75em;
+}
+
+.head-text {
+    font-family: 'Bungee', cursive;
+    font-size: 40;
+}
+
+.jotext {
+    color: rgb(233, 84, 32);
+}

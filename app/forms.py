@@ -30,6 +30,7 @@ class CommentForm(forms.Form):
 class FilterForm(forms.Form):
     options = [
         ('', ''),
+        ('Random', 'Random'),
         ('AKA', 'AKA'),
         ('Jo\'s Custom Filter', 'Jo\'s Custom Filter', ),
         ('Black&White', 'Black&White'),
@@ -46,6 +47,7 @@ class FilterForm(forms.Form):
 
     def get_filter(self):
         return {
+            'Random': 'Random',
             'BLUR': ImageFilter.GaussianBlur(2),
             'CONTOUR': ImageFilter.CONTOUR,
             'EMBOSS': ImageFilter.EMBOSS,
