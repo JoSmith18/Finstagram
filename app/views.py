@@ -16,7 +16,7 @@ from app import filters
 class Feed(View):
     def get(self, request):
         docs = models.Document.objects.all().order_by('-uploaded_at')
-        videos = models.Video.objects.all()
+        videos = models.Video.objects.all().order_by('-uploaded_at')
         comment_form = forms.CommentForm()
         html = '<div class="col-lg-4">'
         if len(docs) + len(videos) == 1:
