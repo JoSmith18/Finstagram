@@ -49,4 +49,6 @@ body {
 
 .font-type {
     font-family: 'Bungee', cursive;
+    color: rgb(233, 84, 32);
+    text-align: start;
 }

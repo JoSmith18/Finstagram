@@ -149,10 +149,10 @@
                             </form>
                             {% if d.comment_set.all %}
                             <hr>
-                            <ol>
+                            <ul>
                                 {% for comment in d.comment_set.all %}
                                 <li>{{comment.comment}} - Commented At: {{comment.time}}</li> {% endfor %}
-                            </ol>
+                            </ul>
                             <hr>{% endif %}
                             <form action="{%url 'app:comment' d.id %} " method="post">
                                 {% csrf_token %} {{ comment_form }}
