@@ -39,7 +39,6 @@ class Upload(View):
             image = image.crop(box=(int((w - s) / 2), int((h - s) / 2), int(
                 (w + s) / 2), int((h + s) / 2)))
             image = resizeimage.resize_cover(image, [500, 500], validate=False)
-
             image.save(path)
             return redirect('../feed/')
         else:
@@ -56,13 +55,6 @@ class Upload_Video(View):
         form = forms.VideoForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            path = 'app/static/' + models.Document.objects.last().image_url()
-            image = Image.open(path)
-            w, h = image.size
-            s = min(w, h)
-            image = image.crop(box=(int((w - s) / 2), int((h - s) / 2), int(
-                (w + s) / 2), int((h + s) / 2)))
-            image.save(path)
             return redirect('../feed/')
         else:
             return render(request, 'app/uploadvideo.html', {'form': form})

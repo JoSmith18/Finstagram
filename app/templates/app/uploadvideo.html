@@ -1,14 +1,25 @@
 {% load static %}{% block body %}
 
 <head>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+        crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Bungee" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'app/bootwatch.css' %}">
     <link rel="stylesheet" href="{% static 'app/style.css' %}">
 </head>
 <div class="container">
     <center>
-        <h2>
-            <a href="{% url 'app:feed' %}">Feed Page</a>
-        </h2>
+        <div class="col-lg-12 icon-header">
+            <span class="head-text">
+                <a href="{% url 'app:feed' %}" class="font-type">Back To Feed Page</a>
+            </span>
+            <span class="fa-stack fa-md">
+                <i class="fa fa-circle fa-stack-1x jotext"></i>
+                <i class="fa fa-instagram fa-stack-2x fa-rotate-90" aria-hidden="true"></i>
+            </span>
+        </div>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %} {{ form}}
             <button type="submit">Upload</button>
