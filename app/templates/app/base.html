@@ -98,7 +98,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading"> {{ d.uploaded_at }}
                     <h3>
-                        <b>Posted By: {{ d.posted_by }}</b>
+                        <b class="font-type">Posted By: {{ d.posted_by }}</b>
                     </h3>
                     <form action="{% url 'app:delete' d.id %}" method="post">
                         {% csrf_token %}
@@ -135,7 +135,7 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <h4 class="panel-click">
+                    <h4 class="panel-click font-type">
                         <i class="fa fa-chevron-down" aria-hidden="true"></i>&emsp;{{d.caption}}</h4>
                     <div class="panelfoot">
                         <a href="{% url 'app:filter' d.id %}">

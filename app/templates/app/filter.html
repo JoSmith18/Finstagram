@@ -7,9 +7,9 @@
 <div>
     <center>
         <h2>
-            <a href="{% url 'app:feed' %}">Feed Page</a>
+            <a href="{% url 'app:feed' %}" class="font-type">Feed Page</a>
         </h2>
-        <img src="{% static path %}" width="420" height="340">
+        <img src="{% static path %}" width="420">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %} {{ form.as_p }}
             <button type="submit">Upload</button>

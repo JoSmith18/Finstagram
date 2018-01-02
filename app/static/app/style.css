@@ -46,3 +46,7 @@ body {
 .jotext {
     color: rgb(233, 84, 32);
 }
+
+.font-type {
+    font-family: 'Bungee', cursive;
+}
