@@ -18,14 +18,10 @@ class Feed(View):
         docs = models.Document.objects.all().order_by('-uploaded_at')
         videos = models.Video.objects.all().order_by('-uploaded_at')
         comment_form = forms.CommentForm()
-        html = '<div class="col-lg-4">'
-        if len(docs) + len(videos) == 1:
-            html = '<div class="col-lg-6 col-lg-offset-3">'
-        elif len(docs) + len(videos) == 2:
-            html = '<div class="col-lg-6">'
+        total = docs.count() + videos.count()
         return render(request, 'app/base.html', {
             'docs': docs,
-            'html': html,
+            'total': total,
             'videos': videos,
             'comment_form': comment_form
         })

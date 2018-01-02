@@ -1,5 +1,5 @@
 <html>
-{% load static %}
+{% load static %} {% load app_extras%}
 
 <head>
     <title>FakeInsta</title>
@@ -94,82 +94,84 @@
                     </div>
                 </div>
             </div>
-            {% endfor %} {% endif %}{% if docs or videos%} {% for d in docs %} {% autoescape off %} {{ html }} {% endautoescape %}
-            <div class="panel panel-default">
-                <div class="panel-heading"> {{ d.uploaded_at }}
-                    <h3>
-                        <b class="font-type">Posted By: {{ d.posted_by }}</b>
-                    </h3>
-                    <form action="{% url 'app:delete' d.id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn pull-right">
-                            <i class="fa fa-window-close" aria-hidden="true"></i>
-                        </button>
-                    </form>
-                </div>
-                <div class="panel-body">
-                    <div class="thumbnail crop">
-                        <img src="{% static d.image_url %}?t={% now 'u' %}" id="{{d.id}}" class="img-responsive" />
-                    </div>
-                    <div class="like-dislike-btn">
-                        <form action="{% url 'app:likepic' d.id %}" method="post">
+            {% endfor %} {% endif %}{% if docs or videos%} {% for d in docs %}
+            <div class="{{total|htmlclass}}">
+                <div class="panel panel-default ">
+                    <div class="panel-heading "> {{ d.uploaded_at }}
+                        <h3>
+                            <b class="font-type ">Posted By: {{ d.posted_by }}</b>
+                        </h3>
+                        <form action="{% url 'app:delete' d.id %} " method="post ">
                             {% csrf_token %}
-                            <button type="submit" class="btn">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-square fa-stack-2x text-danger"></i>
-                                    <i class="fa fa-heart fa-stack-1x fa-inverse"></i>
-                                </span>
+                            <button type="submit " class="btn pull-right ">
+                                <i class="fa fa-window-close " aria-hidden="true "></i>
                             </button>
-                            {{d.likes}}
-                        </form>
-                        <form action="{% url 'app:dislikepic' d.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-heart fa-stack-1x text-danger"></i>
-                                    <i class="fa fa-ban fa-stack-2x"></i>
-                                </span>
-                            </button>
-                            {{d.dislikes}}
                         </form>
                     </div>
-                </div>
-                <div class="panel-footer">
-                    <h4 class="panel-click font-type">
-                        <i class="fa fa-chevron-down" aria-hidden="true"></i>&emsp;{{d.caption}}</h4>
-                    <div class="panelfoot">
-                        <a href="{% url 'app:filter' d.id %}">
-                            <i class="fa fa-paint-brush" aria-hidden="true"></i> Filter
-                        </a>
-                        <form action="{% url 'app:rotate' d.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn">
-                                <i class="fa fa-repeat" aria-hidden="true"></i> Rotate</button>
-                        </form>
-                        <hr>
-                        <ol>
-                            {% for comment in d.comment_set.all %}
-                            <li>{{comment.comment}} - Commented At: {{comment.time}}</li> {% endfor %}
-                        </ol>
-                        <hr>
-                        <form action="{%url 'app:comment' d.id %}" method="post">
-                            {% csrf_token %} {{ comment_form }}
-                            <button type="submit" class="btn">Add Comment</button>
-                        </form>
+                    <div class="panel-body ">
+                        <div class="thumbnail crop ">
+                            <img src="{% static d.image_url %}?t={% now 'u' %} " id="{{d.id}} " class="img-responsive " />
+                        </div>
+                        <div class="like-dislike-btn ">
+                            <form action="{% url 'app:likepic' d.id %} " method="post ">
+                                {% csrf_token %}
+                                <button type="submit " class="btn ">
+                                    <span class="fa-stack fa-lg ">
+                                        <i class="fa fa-square fa-stack-2x text-danger "></i>
+                                        <i class="fa fa-heart fa-stack-1x fa-inverse "></i>
+                                    </span>
+                                </button>
+                                {{d.likes}}
+                            </form>
+                            <form action="{% url 'app:dislikepic' d.id %} " method="post ">
+                                {% csrf_token %}
+                                <button type="submit " class="btn ">
+                                    <span class="fa-stack fa-lg ">
+                                        <i class="fa fa-heart fa-stack-1x text-danger "></i>
+                                        <i class="fa fa-ban fa-stack-2x "></i>
+                                    </span>
+                                </button>
+                                {{d.dislikes}}
+                            </form>
+                        </div>
+                    </div>
+                    <div class="panel-footer ">
+                        <h4 class="panel-click font-type ">
+                            <i class="fa fa-chevron-down " aria-hidden="true "></i>&emsp;{{d.caption}}</h4>
+                        <div class="panelfoot ">
+                            <a href="{% url 'app:filter' d.id %} ">
+                                <i class="fa fa-paint-brush " aria-hidden="true "></i> Filter
+                            </a>
+                            <form action="{% url 'app:rotate' d.id %} " method="post ">
+                                {% csrf_token %}
+                                <button type="submit " class="btn ">
+                                    <i class="fa fa-repeat " aria-hidden="true "></i> Rotate</button>
+                            </form>
+                            {% if d.comment_set.all %}
+                            <hr>
+                            <ol>
+                                {% for comment in d.comment_set.all %}
+                                <li>{{comment.comment}} - Commented At: {{comment.time}}</li> {% endfor %}
+                            </ol>
+                            <hr>{% endif %}
+                            <form action="{%url 'app:comment' d.id %} " method="post">
+                                {% csrf_token %} {{ comment_form }}
+                                <button type="submit " class="btn ">Add Comment</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
+            {% endfor %} {% else %}
         </div>
-        {% endfor %} {% else %}
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <h3>No Pictures :'(</h3>
+        <div class="row ">
+            <div class="col-lg-12 ">
+                <h3>No Pictures :'(</h3>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="{% static 'app/index.js' %}"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js "></script>
+        <script src="{% static 'app/index.js' %} "></script>
 </body>
 
 </html>
