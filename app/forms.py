@@ -42,6 +42,8 @@ class CommentOnVideoForm(forms.Form):
 class FilterForm(forms.Form):
     options = [
         ('', ''),
+        ('Lettertext','Lettertext'),
+        ('Andy', 'Andy Warhol'),
         ('Random', 'Random'),
         ('AKA', 'AKA'),
         ('Jo\'s Custom Filter', 'Jo\'s Custom Filter', ),
@@ -54,6 +56,8 @@ class FilterForm(forms.Form):
         ('FIND_EDGES', 'Find Edges'),
         ('SMOOTH_MORE', 'Extra Smooth'),
         ('SHARPEN', 'Sharpen'),
+        ('ColorScale', 'Color Scale'),
+        ('Minimalist', 'Minimalist')
     ]
     filters = forms.ChoiceField(choices=options)
 
@@ -70,5 +74,9 @@ class FilterForm(forms.Form):
             'SHARPEN': ImageFilter.SHARPEN,
             'Black&White': 'Black',
             'Jo\'s Custom Filter': 'Jofilt',
-            'AKA': 'AKA'
+            'AKA': 'AKA',
+            'Andy': 'Andy',
+            'ColorScale': 'ColorScale',
+            'Minimalist': 'Minimalist',
+            'Lettertext': 'Lettertext',
         }.get(self.cleaned_data['filters'], None)
