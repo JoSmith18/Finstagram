@@ -1,8 +1,11 @@
-from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect, reverse
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from . import forms
 from django.core.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required
 from os import listdir, remove
 from os.path import isfile, join
 from PIL import ImageFilter, Image
@@ -13,8 +16,52 @@ from random import randint
 from app import filters
 
 
+def count_comment(obj):
+    return obj.comment_set.count()
+
+
+class SignUp(View):
+    def post(self, request):
+        form = forms.SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.refresh_from_db()
+            user.profile.birth_date = form.cleaned_data.get('birth_date')
+            user.save()
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=user.username, password=raw_password)
+            login(request, user)
+            return redirect(request.GET.get('next', 'app:feed'))
+        else:
+            form = forms.SignUpForm()
+            return render(request, 'app/signup.html', {'form': form})
+
+    def get(self, request):
+        form = forms.SignUpForm()
+        return render(request, 'app/signup.html', {'form': form})
+
+
+class Login(View):
+    def post(self, request):
+        form = forms.LoginForm(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data.get('password')
+            username = form.cleaned_data.get('username')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect(request.GET.get('next', 'app:feed'))
+        else:
+            form = forms.LoginForm()
+            return render(request, 'app/login.html', {'form': form})
+
+    def get(self, request):
+        form = forms.LoginForm()
+        return render(request, 'app/login.html', {'form': form})
+
+
 class Feed(View):
     def get(self, request):
+        user = request.user
         docs = models.Document.objects.all().order_by('-uploaded_at')
         videos = models.Video.objects.all().order_by('-uploaded_at')
         comment_form = forms.CommentForm()
@@ -23,13 +70,17 @@ class Feed(View):
             'docs': docs,
             'total': total,
             'videos': videos,
-            'comment_form': comment_form
+            'comment_form': comment_form,
+            'like_next': reverse('app:feed'),
+            'topic': 'Recent',
+            'user': user
         })
 
 
 class Upload(View):
     def post(self, request):
-        form = forms.DocumentForm(request.POST, request.FILES)
+        user = request.user
+        form = forms.DocumentForm(user.profile, request.POST, request.FILES)
         if form.is_valid():
             form.save()
             path = 'app/static/' + models.Document.objects.last().image_url()
@@ -52,7 +103,8 @@ class Upload(View):
 
 class Upload_Video(View):
     def post(self, request):
-        form = forms.VideoForm(request.POST, request.FILES)
+        user = request.user
+        form = forms.VideoForm(user.profile, request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('../feed/')
@@ -79,9 +131,9 @@ class Filter(View):
         if form.is_valid():
             filt = form.get_filter()
             filters.filtering(filt, image, path)
-            return redirect('app:feed')
+            return redirect(request.GET.get('next', 'app:feed'))
         else:
-            return redirect('app:feed')
+            return redirect(request.GET.get('next', 'app:feed'))
 
 
 class Rotate(View):
@@ -91,7 +143,7 @@ class Rotate(View):
             id=doc_id).image_url()
         image = Image.open(path)
         image.rotate(-90).save(path)
-        return redirect('app:feed')
+        return redirect(request.GET.get('next', 'app:feed'))
 
 
 class Delete_Picture(View):
@@ -101,7 +153,7 @@ class Delete_Picture(View):
             id=doc_id).image_url()
         models.Document.objects.get(id=doc_id).delete()
         remove(path)
-        return redirect('app:feed')
+        return redirect(request.GET.get('next', 'app:feed'))
 
 
 class Delete_Video(View):
@@ -110,18 +162,19 @@ class Delete_Video(View):
         path = 'app/static/' + models.Video.objects.get(id=doc_id).image_url()
         models.Video.objects.get(id=doc_id).delete()
         remove(path)
-        return redirect('app:feed')
+        return redirect(request.GET.get('next', 'app:feed'))
 
 
 class Add_Comment(View):
     def post(self, request, document_id):
+        user = request.user
         document = models.Document.objects.get(id=document_id)
         form = forms.CommentForm(document, request.POST)
         if form.is_valid():
             form.save()
-            return redirect('app:feed')
+            return redirect(request.GET.get('next', 'app:feed'))
         else:
-            return redirect('app:feed')
+            return redirect(request.GET.get('next', 'app:feed'))
 
 
 class Add_Comment_Video(View):
@@ -130,9 +183,9 @@ class Add_Comment_Video(View):
         form = forms.CommentOnVideoForm(video, request.POST)
         if form.is_valid():
             form.save()
-            return redirect('app:feed')
+            return redirect(request.GET.get('next', 'app:feed'))
         else:
-            return redirect('app:feed')
+            return redirect(request.GET.get('next', 'app:feed'))
 
 
 class Like_Pic(View):
@@ -140,7 +193,7 @@ class Like_Pic(View):
         d = models.Document.objects.get(id=doc_id)
         d.likes += 1
         d.save()
-        return redirect('app:feed')
+        return redirect(request.GET.get('next', 'app:feed'))
 
 
 class Like_Vid(View):
@@ -148,7 +201,7 @@ class Like_Vid(View):
         d = models.Video.objects.get(id=doc_id)
         d.likes += 1
         d.save()
-        return redirect('app:feed')
+        return redirect(request.GET.get('next', 'app:feed'))
 
 
 class DisLike_Pic(View):
@@ -156,7 +209,7 @@ class DisLike_Pic(View):
         d = models.Document.objects.get(id=doc_id)
         d.dislikes += 1
         d.save()
-        return redirect('app:feed')
+        return redirect(request.GET.get('next', 'app:feed'))
 
 
 class DisLike_Vid(View):
@@ -164,4 +217,85 @@ class DisLike_Vid(View):
         d = models.Video.objects.get(id=doc_id)
         d.dislikes += 1
         d.save()
-        return redirect('app:feed')
+        return redirect(request.GET.get('next', 'app:feed'))
+
+
+class Mostpop(View):
+    def get(self, request):
+        user = request.user
+        docs = models.Document.objects.all().order_by('-likes')
+        videos = models.Video.objects.all().order_by('-likes')
+        comment_form = forms.CommentForm()
+        total = docs.count() + videos.count()
+        return render(request, 'app/base.html', {
+            'docs': docs,
+            'total': total,
+            'videos': videos,
+            'comment_form': comment_form,
+            'like_next': reverse('app:mostpop'),
+            'topic': 'Popular',
+            'user': user
+        })
+
+
+class ByTopic(View):
+    def get(self, request, topic):
+        user = request.user
+        docs = models.Document.objects.filter(topic=str(topic))
+        videos = models.Video.objects.filter(topic=topic)
+        comment_form = forms.CommentForm()
+        total = docs.count() + videos.count()
+        return render(request, 'app/base.html', {
+            'docs': docs,
+            'total': total,
+            'videos': videos,
+            'comment_form': comment_form,
+            'like_next': reverse('app:mostpop'),
+            'topic': str(topic),
+            'user': user
+        })
+
+
+class ByComments(View):
+    def get(self, request):
+        user = request.user
+        document = sorted(
+            models.Document.objects.all(),
+            key=lambda d: d.comment_set.count())[::-1]
+        videos = models.Video.objects.all().order_by('-likes')
+        comment_form = forms.CommentForm()
+        total = len(document) + videos.count()
+        return render(request, 'app/base.html', {
+            'docs': document,
+            'total': total,
+            'videos': videos,
+            'comment_form': comment_form,
+            'like_next': reverse('app:mostpop'),
+            'topic': 'Comment',
+            'user': user
+        })
+
+
+class GetUserPost(View):
+    def get(self, request):
+        user = request.user
+        user1 = request.GET.get('user')
+
+        try:
+            docs = models.Profile.objects.get(
+                user__username=user1).document_set.all().order_by(
+                    '-uploaded_at')
+            videos = models.Profile.objects.get(
+                user__username=str(user1)).video_set.all()
+            comment_form = forms.CommentForm()
+            total = docs.count() + videos.count()
+            return render(request, 'app/base.html', {
+                'docs': docs,
+                'total': total,
+                'videos': videos,
+                'comment_form': comment_form,
+                'like_next': reverse('app:mostpop'),
+                'user': user
+            })
+        except:
+            return redirect(request.GET.get('next', 'app:feed'))

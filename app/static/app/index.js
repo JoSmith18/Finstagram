@@ -11,7 +11,7 @@ function readURL(input) {
         var reader = new FileReader();
 
         reader.onload = function(e) {
-            $('#blah')
+            $('#preview-img')
                 .attr('src', e.target.result)
                 .attr('width', 320)
                 .attr('height', 260);
@@ -24,3 +24,8 @@ function readURL(input) {
 $('#id_image').on('change', function() {
     readURL(this);
 });
+
+function makeActive(s) {
+    $('li').removeClass('active');
+    $('#' + String(s)).addClass('active');
+}

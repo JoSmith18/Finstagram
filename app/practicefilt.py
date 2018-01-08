@@ -3,7 +3,7 @@ from resizeimage import resizeimage
 from random import randint
 
 image = Image.open(
-    '/home/basecamp/Documents/DailyExercises/Dec/Finstagram/app/static/app/images/60F2CB82-9F94-428C-A167-EF67760B7E54.jpeg'
+    '/home/basecamp/Documents/DailyExercises/Dec/Finstagram/app/static/app/images/IMG_1146.JPG'
 )
 image = resizeimage.resize_cover(image, [500, 500], validate=False)
 
@@ -13,9 +13,7 @@ image = image.convert('L').quantize(3).convert('RGB').filter(
 
 # l = list(image.getdata())
 # n = len(l)
-
 # new_data = []
-
 # new_data.extend(
 #     list(map(lambda t: (255 - t[0], 255 - t[2], 255), l[0:(n // 3)])))
 # new_data.extend(
@@ -73,3 +71,4 @@ im2.putdata(data)
 #         map(lambda t: (250 - t[2], 255 - t[1], 255 - t[0]), l[(n // 3 * 2):])))
 
 im2.show()
+print(d)

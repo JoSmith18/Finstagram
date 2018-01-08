@@ -8,9 +8,13 @@ img .crop {
     background-color: burlywood;
 }
 
+.container .jumbotron {
+    border-radius: 6px 6px 0 0;
+}
 .jumbotron {
     text-align: center;
     background-color: rgb(233, 195, 148);
+    margin-bottom: 0;
 }
 
 .pull-right {
@@ -22,6 +26,9 @@ body {
     background-color: rgb(207, 162, 107);
 }
 
+body .nav-link {
+    font-size: 1.5rem;
+}
 .like-dislike-btn form {
     display: inline;
 }
@@ -51,4 +58,19 @@ body {
     font-family: 'Bungee', cursive;
     color: rgb(233, 84, 32);
     text-align: start;
+}
+
+.logout {
+    float: right;
+}
+
+.navbar {
+    background-color: rgb(233, 84, 32);
+    color: white;
+    border-radius: 0 0 6px 6px;
+}
+
+.nav-link {
+    color: white;
+    size: 115%;
 }

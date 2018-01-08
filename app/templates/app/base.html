@@ -22,6 +22,7 @@
                     <i class="fa fa-instagram fa-stack-2x fa-rotate-90" aria-hidden="true"></i>
                 </span>
             </div>
+
             <h2>
                 <a href="{% url 'app:upload' %}">
                     <i class="fa fa-camera" aria-hidden="true"></i>
@@ -31,15 +32,73 @@
                 <a href="{% url 'app:uploadvideo' %}">
                     <i class="fa fa-video-camera" aria-hidden="true"></i> Upload Video</a>
             </h2>
+
+            <div class="logout">
+                <form action="{% url 'app:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">LogOut</button>
+                </form>
+            </div>
         </div>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" id="Recent">
+                        <a class="nav-link" href="{% url 'app:feed' %}">Recently Added
+                        </a>
+                    </li>
+                    <li class="nav-item" id="Popular">
+                        <a class="nav-link" href="{% url 'app:mostpop' %}">
+                            Most Popular
+                        </a>
+                    </li>
+                    <li class="nav-item" id="Comment">
+                        <a class="nav-link" href="{% url 'app:bycomment' %}">
+                            Most Comments
+                        </a>
+                    </li>
+                    <li class="nav-item" id='Sports'>
+                        <a class="nav-link" href="{% url 'app:bytopic' 'Sports' %}">
+                            Sports
+                        </a>
+                    </li>
+                    <li class="nav-item" id='Politics'>
+                        <a class="nav-link" href="{% url 'app:bytopic' 'Politics' %}">
+                            Politics
+                        </a>
+                    </li>
+                    <li class="nav-item" id='Programming'>
+                        <a class="nav-link" href="{% url 'app:bytopic' 'Programming'%}">
+                            Programming
+                        </a>
+                    </li>
+                    <li class="nav-item" id='Weather'>
+                        <a class="nav-link" href="{% url 'app:bytopic' 'Weather' %}">
+                            Weather
+                        </a>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0" action="{% url 'app:search' %}">
+                    {% csrf_token %}
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search" name="user">
+                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
         <div class="row">
             {% if videos %} {% for video in videos %}
             <div class="panel panel-default">
                 <div class="panel-heading"> {{ video.uploaded_at }}
                     <h3 class="font-type">
-                        <b>Posted By: {{ video.posted_by }}</b>
+                        <b>Posted By: {{ video.posted_by.user.username }}</b>
 
-                        <form action="{% url 'app:deletevideo' video.id %}" method="post">
+                        <form action="{% url 'app:deletevideo' video.id %}?next={{like_next}}" method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn pull-right">
                                 <i class="fa fa-window-close" aria-hidden="true"></i>
@@ -48,13 +107,13 @@
                 </div>
                 <div class="panel-body">
                     <div class="thumbnail crop">
-                        <video width="320" height="260" id="{{video.id}}" controls>
+                        <video width="320" id="{{video.id}}" controls>
                             <source src="{% static video.image_url %}?t={% now 'u' %}" type="video/ogg" />
                             <source src="{% static video.image_url %}?t={% now 'u' %}" type="video/mp4" /> Your browser does not support the video tag.
                         </video>
                     </div>
                     <div class="like-dislike-btn">
-                        <form action="{% url 'app:likevideo' video.id %}" method="post">
+                        <form action="{% url 'app:likevideo' video.id %}?next={{ like_next }}" method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn">
                                 <span class="fa-stack fa-lg">
@@ -64,7 +123,7 @@
                             </button>
                             {{video.likes}}
                         </form>
-                        <form action="{% url 'app:dislikevideo' video.id %}" method="post">
+                        <form action="{% url 'app:dislikevideo' video.id %}?next={{like_next}}" method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn">
                                 <span class="fa-stack fa-lg">
@@ -83,10 +142,11 @@
                         <hr>
                         <ol>
                             {% for comment in video.commentvid_set.all %}
-                            <li>{{comment.comment}} - Commented At: {{comment.time}}</li> {% endfor %}
+                            <li>{{ video.posted_by.user.username }}:{{comment.comment}} - Commented At: {{comment.time}}</li>
+                            {% endfor %}
                         </ol>
                         <hr>
-                        <form action="{%url 'app:commentvideo' video.id %}" method="post">
+                        <form action="{%url 'app:commentvideo' video.id %}?next={{like_next}}" method="post">
                             {% csrf_token %} {{ comment_form }}
                             <button type="submit" class="btn">Add Comment</button>
                         </form>
@@ -99,9 +159,13 @@
                 <div class="panel panel-default">
                     <div class="panel-heading"> {{ d.uploaded_at }}
                         <h3>
-                            <b class="font-type">Posted By: {{ d.posted_by }}</b>
+                            <b class="font-type">Posted By:
+                                <a class="form-inline my-2 my-lg-0" href="{% url 'app:search' %}">
+                                    {{ d.posted_by.user.username }}
+                                </a>
+                            </b>
                         </h3>
-                        <form action="{% url 'app:delete' d.id %} " method="post">
+                        <form action="{% url 'app:delete' d.id %}?next={{like_next}}" method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn pull-right">
                                 <i class="fa fa-window-close" aria-hidden="true"></i>
@@ -110,10 +174,10 @@
                     </div>
                     <div class="panel-body">
                         <div class="thumbnail crop">
-                            <img src="{% static d.image_url %}?t={% now 'u' %} " id="{{d.id}} " class="img-responsive" />
+                            <img src="{% static d.image_url %}?t={% now 'u' %}" id="{{d.id}} " class="img-responsive" />
                         </div>
                         <div class="like-dislike-btn">
-                            <form action="{% url 'app:likepic' d.id %} " method="post">
+                            <form action="{% url 'app:likepic' d.id %}?next={{like_next}}" method="post">
                                 {% csrf_token %}
                                 <button type="submit " class="btn">
                                     <span class="fa-stack fa-lg">
@@ -123,7 +187,7 @@
                                 </button>
                                 {{d.likes}}
                             </form>
-                            <form action="{% url 'app:dislikepic' d.id %} " method="post">
+                            <form action="{% url 'app:dislikepic' d.id %}?next={{like_next}}" method="post">
                                 {% csrf_token %}
                                 <button type="submit " class="btn">
                                     <span class="fa-stack fa-lg">
@@ -139,22 +203,24 @@
                         <h4 class="panel-click font-type">
                             <i class="fa fa-chevron-down" aria-hidden="true"></i>&emsp;{{d.caption}}</h4>
                         <div class="panelfoot">
-                            <a href="{% url 'app:filter' d.id %} ">
+                            {% if request.user == d.posted_by.user %}
+                            <a href="{% url 'app:filter' d.id %}?next={{like_next}}">
                                 <i class="fa fa-paint-brush" aria-hidden="true"></i> Filter
                             </a>
-                            <form action="{% url 'app:rotate' d.id %} " method="post">
+                            <form action="{% url 'app:rotate' d.id %}?next={{like_next}}" method="post">
                                 {% csrf_token %}
                                 <button type="submit " class="btn">
                                     <i class="fa fa-repeat " aria-hidden="true "></i> Rotate</button>
                             </form>
-                            {% if d.comment_set.all %}
+                            {% endif %} {% if d.comment_set.all %}
                             <hr>
                             <ul>
                                 {% for comment in d.comment_set.all %}
-                                <li>{{comment.comment}} - Commented At: {{comment.time}}</li> {% endfor %}
+                                <li>{{ user.username }}: {{comment.comment}} - Commented At: {{comment.time}}</li>
+                                {% endfor %}
                             </ul>
                             <hr>{% endif %}
-                            <form action="{%url 'app:comment' d.id %} " method="post">
+                            <form action="{%url 'app:comment' d.id %}?next={{like_next}}" method="post">
                                 {% csrf_token %} {{ comment_form }}
                                 <button type="submit" class="btn">Add Comment</button>
                             </form>
@@ -171,7 +237,11 @@
             {% endif %}
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="{% static 'app/index.js' %} "></script>
+        <script>
+            makeActive("{{ topic }}");
+        </script>
 </body>
 
 </html>
