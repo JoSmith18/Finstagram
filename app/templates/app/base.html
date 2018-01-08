@@ -52,7 +52,8 @@
             <div class="logout">
                 <form action="{% url 'app:logout' %}" method="post">
                     {% csrf_token %}
-                    <button type="submit">LogOut</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i> LogOut</button>
                 </form>
             </div>
         </div>
@@ -67,36 +68,43 @@
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item" id="Recent">
                         <a class="nav-link" href="{% url 'app:feed' %}">Recently Added
+                            <i class="fa fa-refresh" aria-hidden="true"></i>
                         </a>
                     </li>
                     <li class="nav-item" id="Popular">
                         <a class="nav-link" href="{% url 'app:mostpop' %}">
                             Most Popular
+                            <i class="fa fa-fire" aria-hidden="true"></i>
                         </a>
                     </li>
                     <li class="nav-item" id="Comment">
                         <a class="nav-link" href="{% url 'app:bycomment' %}">
                             Most Comments
+                            <i class="fa fa-comments-o" aria-hidden="true"></i>
                         </a>
                     </li>
                     <li class="nav-item" id='Sports'>
                         <a class="nav-link" href="{% url 'app:bytopic' 'Sports' %}">
                             Sports
+                            <i class="fa fa-futbol-o" aria-hidden="true"></i>
                         </a>
                     </li>
                     <li class="nav-item" id='Politics'>
                         <a class="nav-link" href="{% url 'app:bytopic' 'Politics' %}">
                             Politics
+                            <i class="fa fa-newspaper-o" aria-hidden="true"></i>
                         </a>
                     </li>
                     <li class="nav-item" id='Programming'>
                         <a class="nav-link" href="{% url 'app:bytopic' 'Programming'%}">
                             Programming
+                            <i class="fa fa-laptop" aria-hidden="true"></i>
                         </a>
                     </li>
                     <li class="nav-item" id='Weather'>
                         <a class="nav-link" href="{% url 'app:bytopic' 'Weather' %}">
                             Weather
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
                         </a>
                     </li>
                 </ul>

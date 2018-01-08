@@ -36,19 +36,18 @@
 
                 <form action="{% url 'app:login' %}" method="post">
                     {% csrf_token %} {{ form.as_p }}
-                    <button type="submit">Login</button>
+                    <button type="submit" class="btn btn-primary">Login</button>
                 </form>
+
+                <h1>If Not User Click Button Below.</h1>
+
+
+                <form action="{% url 'app:signup' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">SignUp</button>
+                </form>
+
             </div>
-
-
-
-            <h4>If Not User</h4>
-            <form action="{% url 'app:signup' %}" method="post">
-                {% csrf_token %}
-                <button type="submit">SignUp</button>
-            </form>
-
-
         </div>
     </center>
 </body>
